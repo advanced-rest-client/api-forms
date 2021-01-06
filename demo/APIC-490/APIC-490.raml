@@ -1,0 +1,43 @@
+#%RAML 1.0
+title: test
+version: v1
+protocols: [HTTP]
+mediaType: application/json
+
+types:
+  lat-long:
+    properties:
+      lat: number
+      long: number
+  loc:
+    properties:
+      location:
+
+/file:
+  description: create file resource
+  get:
+    queryString:
+      type: [lat-long | loc ]
+      examples:
+        first:
+          lat: 12
+          long: 13
+        second:
+          location: 1,2
+        third:
+          value:
+            lat: 12
+            location: 2
+          strict: false
+
+/file2:
+  description: create file resource
+  get:
+    queryParameters:
+      loc:
+
+/file3:
+  description: create file resource
+  get:
+    queryString:
+      type: lat-long
