@@ -27,3 +27,9 @@ export declare interface ProcessOptions {
    */
   required?: boolean;
 }
+
+export declare interface AddCustomItemOptions {
+  name?: string;
+  value?: any;
+  inputLabel?: string;
+}
