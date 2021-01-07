@@ -58,15 +58,15 @@ describe('ApiFormMixin', () => {
 
     it('renderEmptyMessage is false when model is set', async () => {
       const element = await basicFixture();
-      element.model = [{ name: '', value: '', schema: {} }];
+      element.apiModel = [{ name: '', value: '', schema: {} }];
       assert.isFalse(element.renderEmptyMessage);
     });
 
     it('renderEmptyMessage goes back to false', async () => {
       const element = await basicFixture();
-      element.model = [{ name: '', value: '', schema: {} }];
+      element.apiModel = [{ name: '', value: '', schema: {} }];
       assert.isFalse(element.renderEmptyMessage);
-      element.model = undefined;
+      element.apiModel = undefined;
       assert.isTrue(element.renderEmptyMessage);
     });
   });
@@ -83,7 +83,7 @@ describe('ApiFormMixin', () => {
     });
 
     it('adds required class', async () => {
-      element.model = [{
+      element.apiModel = [{
         name: '',
         value: '',
         schema: {
@@ -96,7 +96,7 @@ describe('ApiFormMixin', () => {
     });
 
     it('adds optional class', async () => {
-      element.model = [{
+      element.apiModel = [{
         name: '',
         value: '',
         schema: {
@@ -110,7 +110,7 @@ describe('ApiFormMixin', () => {
     });
 
     it('adds with-optional class', async () => {
-      element.model = [{
+      element.apiModel = [{
         name: '',
         value: '',
         schema: {
@@ -125,7 +125,7 @@ describe('ApiFormMixin', () => {
     });
 
     it('adds has-enable-button class', async () => {
-      element.model = [{
+      element.apiModel = [{
         name: '',
         value: '',
         schema: {
@@ -189,7 +189,7 @@ describe('ApiFormMixin', () => {
 
     it('returns model values', async () => {
       const element = await basicFixture();
-      element.model = model;
+      element.apiModel = model;
       await nextFrame();
       const result = element.serializeForm();
       assert.typeOf(result, 'object');
@@ -245,14 +245,14 @@ describe('ApiFormMixin', () => {
 
     it('adds an item to an undefined model', () => {
       element.addCustom();
-      assert.typeOf(element.model, 'array');
-      assert.lengthOf(element.model, 1);
+      assert.typeOf(element.apiModel, 'array');
+      assert.lengthOf(element.apiModel, 1);
     });
 
     it('adds an item to an existing model', () => {
-      element.model = [model];
+      element.apiModel = [model];
       element.addCustom();
-      assert.lengthOf(element.model, 2);
+      assert.lengthOf(element.apiModel, 2);
     });
   });
 

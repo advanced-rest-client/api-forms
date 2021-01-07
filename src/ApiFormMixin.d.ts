@@ -18,7 +18,7 @@ interface ApiFormMixin {
   /**
    * View model to use to render the form.
    */
-  model: AmfFormItem[];
+  apiModel: AmfFormItem[];
   /**
    * Set to true to show optional parameters (not required by the API).
    * @attribute

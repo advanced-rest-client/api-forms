@@ -15,7 +15,7 @@ export class FormMixinElement extends ApiFormMixin(LitElement) {
 
   render() {
     const {
-      model: items,
+      apiModel: items,
       allowHideOptional,
       optionalOpened,
       allowDisableParams,
@@ -54,7 +54,7 @@ export class FormMixinElement extends ApiFormMixin(LitElement) {
     if (Number.isNaN(index)) {
       return;
     }
-    this.model[index].value = e.target.value;
+    this.apiModel[index].value = e.target.value;
     this.requestUpdate();
   }
 }

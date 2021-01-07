@@ -277,7 +277,7 @@ class ComponentDemo extends DemoPage {
           name="arrayModel"
           data-target="v9"
           @change="${this._valueHandler}"
-          isArray></api-form-item>
+        ></api-form-item>
         <code>${this.v9 && this.v9.length ? JSON.stringify(this.v9, null, 2) : undefined}</code>
       </section>
 

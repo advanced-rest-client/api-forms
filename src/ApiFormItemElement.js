@@ -140,7 +140,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     }
     this[isArrayValue] = value;
     this._isArrayChanged(value);
-    this.requestUpdate('_isArray', value);
+    this.requestUpdate('_isArray', old);
   }
 
   get _isNillable() {
@@ -154,7 +154,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       return;
     }
     this[isNillableValue] = value;
-    this.requestUpdate('_isNillable', value);
+    this.requestUpdate('_isNillable', old);
   }
 
   constructor() {
@@ -476,18 +476,19 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
   [enumTemplate]() {
     const { name, readOnly, disabled, value, outlined, compatibility, _nilEnabled } = this;
     const viewModel = /** @type AmfFormItem */ (this.model);
-    const values = viewModel.schema.enum || [];
+    const { schema = {} } = viewModel;
+    const values = schema.enum || [];
     return html`
     <anypoint-dropdown-menu
       name="${name}"
-      ?required="${!_nilEnabled && viewModel.schema.required}"
+      ?required="${!_nilEnabled && schema.required}"
       autoValidate
       data-type="enum"
       ?disabled="${readOnly || disabled || _nilEnabled}"
       ?outlined="${outlined}"
       ?compatibility="${compatibility}"
     >
-      <label slot="label">${viewModel.schema.inputLabel}</label>
+      <label slot="label">${schema.inputLabel}</label>
       <anypoint-listbox
         slot="dropdown-content"
         attrforselected="data-value"
@@ -506,19 +507,19 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     if (!viewModel) {
       return '';
     }
-
+    const { schema = {} } = viewModel;
     const bindValue = (value === true || value === 'true') ? 'true' : 'false';
     return html`
     <anypoint-dropdown-menu
       name="${name}"
-      ?required="${!_nilEnabled && viewModel.schema.required}"
+      ?required="${!_nilEnabled && schema.required}"
       autoValidate
       data-type="boolean"
       ?disabled="${readOnly || disabled || _nilEnabled}"
       ?outlined="${outlined}"
       ?compatibility="${compatibility}"
     >
-      <label slot="label">${viewModel.schema.inputLabel}</label>
+      <label slot="label">${schema.inputLabel}</label>
       <anypoint-listbox
         slot="dropdown-content"
         attrforselected="data-value"
@@ -538,10 +539,10 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     if (!viewModel) {
       return '';
     }
-    const schema = viewModel.schema || {};
+    const { schema = {} } = viewModel;
     return html`<anypoint-input
       .value="${value}"
-      ?required="${!_nilEnabled && viewModel.schema.required}"
+      ?required="${!_nilEnabled && schema.required}"
       .pattern="${schema.pattern}"
       .name="${name}"
       autoValidate
@@ -571,7 +572,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     if (!viewModel) {
       return '';
     }
-    const schema = viewModel.schema || {};
+    const { schema = {} } = viewModel;
     const itemLabel = schema.inputLabel || 'Parameter value';
     return html`
     <label class="array-label">${itemLabel}</label>
@@ -580,7 +581,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     <div class="array-item">
       <anypoint-input
         .value="${item.value}"
-        ?required="${!_nilEnabled && viewModel.schema.required}"
+        ?required="${!_nilEnabled && schema.required}"
         .pattern="${schema.pattern}"
         .name="${name}"
         autoValidate

@@ -29,6 +29,7 @@ anypoint-input,
 anypoint-dropdown-menu {
   flex: 1;
   width: auto;
+  margin: 0;
 }
 
 anypoint-button .icon {
@@ -43,4 +44,7 @@ anypoint-button .icon {
   margin-left: 8px;
 }
 
+:host([isArray]) anypoint-input {
+  margin-bottom: 20px;
+}
 `;

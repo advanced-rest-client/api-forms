@@ -38,7 +38,7 @@ const mxFunction = base => {
         /**
          * View model to use to render the form.
          */
-        model: { type: Array },
+        apiModel: { type: Array },
         /**
          * Set to true to show optional parameters (not required by the API).
          */
@@ -84,14 +84,14 @@ const mxFunction = base => {
     /**
      * @returns {AmfFormItem[]|undefined}
      */
-    get model() {
+    get apiModel() {
       return this[modelValue];
     }
 
     /**
      * @param {AmfFormItem[]|undefined} value
      */
-    set model(value) {
+    set apiModel(value) {
       const old = this[modelValue];
       if (old === value) {
         return;
@@ -126,7 +126,7 @@ const mxFunction = base => {
       this[allowCustomValue] = value;
       this.renderEmptyMessage = this._computeRenderEmptyMessage(
         value,
-        this.model
+        this.apiModel
       );
       this.requestUpdate('allowCustom', old);
     }
@@ -149,7 +149,7 @@ const mxFunction = base => {
       this[allowHideOptionalValue] = value;
       this.hasOptional = this._computeHasOptionalParameters(
         value,
-        this.model
+        this.apiModel
       );
       this.renderOptionalCheckbox = this._computeRenderCheckbox(
         value,
@@ -294,8 +294,8 @@ const mxFunction = base => {
       });
       const worker = new ApiViewModel();
       const item = worker.buildProperty(defaults);
-      const model = this.model || [];
-      this.model = [...model, item];
+      const model = this.apiModel || [];
+      this.apiModel = [...model, item];
       this.optionalOpened = true;
     }
 
@@ -310,11 +310,11 @@ const mxFunction = base => {
       if (Number.isNaN(index)) {
         return;
       }
-      const { model } = this;
-      if (!model || !model.length) {
+      const { apiModel } = this;
+      if (!apiModel || !apiModel.length) {
         return;
       }
-      model.splice(index, 1);
+      apiModel.splice(index, 1);
       this.requestUpdate();
     }
 
