@@ -641,7 +641,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
    */
   _computeIsRequired(/** @type AmfFormItemSchema */ schema) {
     if (!schema.inputType || schema.inputType === 'text') {
-      return schema.minLength > 0 || Boolean(schema.pattern);
+      return (schema.minLength > 0 || Boolean(schema.pattern)) && schema.required;
     } 
       return schema.required;
     
