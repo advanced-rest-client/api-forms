@@ -17,6 +17,7 @@ import styles from './styles/ApiFormItem.styles.js';
 /** @typedef {import('@anypoint-web-components/anypoint-input').AnypointInput} AnypointInput *
 /** @typedef {import('@anypoint-web-components/anypoint-dropdown-menu').AnypointDropdownMenu} AnypointDropdownMenu *
 /** @typedef {import('@advanced-rest-client/arc-types').FormTypes.AmfFormItem} AmfFormItem */
+/** @typedef {import('@advanced-rest-client/arc-types').FormTypes.AmfFormItemSchema} AmfFormItemSchema */
 
 export const enumTemplate = Symbol('enumTemplate');
 export const booleanTemplate = Symbol('booleanTemplate');
@@ -540,9 +541,10 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       return '';
     }
     const { schema = {} } = viewModel;
+    const required = this._computeIsRequired(schema);
     return html`<anypoint-input
       .value="${value}"
-      ?required="${!_nilEnabled && schema.required}"
+      ?required="${!_nilEnabled && required}"
       .pattern="${schema.pattern}"
       .name="${name}"
       autoValidate
@@ -577,15 +579,17 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     return html`
     <label class="array-label">${itemLabel}</label>
 
-    ${_arrayValue.map((item, index) => html`
+    ${_arrayValue.map((item, index) => {
+      const required = this._computeIsRequired(schema);
+      return html`
     <div class="array-item">
       <anypoint-input
         .value="${item.value}"
-        ?required="${!_nilEnabled && schema.required}"
+        ?required="${!_nilEnabled && required}"
         .pattern="${schema.pattern}"
         .name="${name}"
         autoValidate
-        .type="${/** @type any */(schema.inputType)}"
+        .type="${ /** @type any */(schema.inputType)}"
         .min="${typeof schema.minimum !== 'undefined' ? String(schema.minimum) : undefined}"
         .max="${typeof schema.maximum !== 'undefined' ? String(schema.maximum) : undefined}"
         .maxLength="${schema.maxLength}"
@@ -612,7 +616,8 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       >
         <arc-icon icon="removeCircleOutline"></arc-icon>
       </anypoint-icon-button>` : undefined}
-    </div>`)}
+    </div>`;
+    })}
     <div class="add-action">
       <anypoint-button
         @click="${this.addEmptyArrayValue}"
@@ -625,5 +630,20 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       </anypoint-button>
     </div>
     `;
+  }
+
+  /**
+   * Determines whether the schema is required. Returns true for
+   * non-text inputs, returns false if the schema is a text type
+   * and has no minCount or pattern restrictions
+   * @param {AmfFormItemSchema} schema
+   * @returns {Boolean}
+   */
+  _computeIsRequired(/** @type AmfFormItemSchema */ schema) {
+    if (!schema.inputType || schema.inputType === 'text') {
+      return schema.minLength > 0 || Boolean(schema.pattern);
+    } 
+      return schema.required;
+    
   }
 }
