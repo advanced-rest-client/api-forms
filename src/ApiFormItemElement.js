@@ -542,6 +542,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     }
     const { schema = {} } = viewModel;
     const required = this._computeIsRequired(schema);
+    const warningMessage = this._computeInputWarningMessage(value, required, schema);
     return html`<anypoint-input
       .value="${value}"
       ?required="${!_nilEnabled && required}"
@@ -563,6 +564,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       @input="${this._inputHandler}"
       @change="${this._inputChangeHandler}"
       invalidMessage="${`${name} is invalid. Check documentation.`}"
+      .infoMessage="${warningMessage}"
     >
       <label slot="label">${schema.inputLabel}</label>
     </anypoint-input>`;
@@ -581,6 +583,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
 
     ${_arrayValue.map((item, index) => {
       const required = this._computeIsRequired(schema);
+      const warningMessage = this._computeInputWarningMessage(item.value, required, schema);
       return html`
     <div class="array-item">
       <anypoint-input
@@ -603,6 +606,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
         data-index="${index}"
         @input="${this._arrayValueHandler}"
         invalidMessage="${`${name} is invalid. Check documentation.`}"
+        .infoMessage="${warningMessage}"
       >
         <label slot="label">${itemLabel}</label>
       </anypoint-input>
@@ -640,10 +644,30 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
    * @returns {Boolean}
    */
   _computeIsRequired(/** @type AmfFormItemSchema */ schema) {
-    if (!schema.inputType || schema.inputType === 'text') {
+    if (this._computeIsTextInput(schema)) {
       return (schema.minLength > 0 || Boolean(schema.pattern)) && schema.required;
     } 
       return schema.required;
     
+  }
+
+  /**
+   * Determines whether warning message should be returned.
+   * If value is present, show nothing.
+   * Otherwise, return message if schema is text input, required, and
+   * input is not required.
+   * @param {AmfFormItemSchema} schema
+   * @param {Boolean} required Input field computed required value
+   * @returns {String|undefined}
+   */
+  _computeInputWarningMessage(value, required, /** @type AmfFormItemSchema */ schema) {
+    if (!value && this._computeIsTextInput(schema) && !required && schema.required) {
+      return `Warning: value is required but currently empty.`
+    }
+    return undefined;
+  }
+
+  _computeIsTextInput(schema) {
+    return !schema.inputType || schema.inputType === 'text';
   }
 }
