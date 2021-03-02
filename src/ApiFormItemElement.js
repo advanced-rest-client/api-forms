@@ -675,7 +675,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
    */
   _computeInputWarningMessage(value, required, /** @type AmfFormItemSchema */ schema) {
     if (!value && this._computeIsTextInput(schema) && !required && schema.required) {
-      return `Warning: value is required but currently empty.`
+      return `Value is required but currently empty.`
     }
     return undefined;
   }
