@@ -87,7 +87,15 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       /**
        * When set the editor renders form controls disabled.
        */
-      disabled: { type: Boolean, reflect: true }
+      disabled: { type: Boolean, reflect: true },
+      /**
+       * Warning message for single text input value
+       */
+      _valueWarningMessage: { type: String },
+      /**
+       * Warning messages for array values
+       */
+      _arrayWarningMessages: { type: Array },
     };
   }
 
@@ -127,6 +135,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     this[valueValue] = value;
     this.requestUpdate('value', old);
     this._isArrayChanged(this._isArray);
+    this._updateValueWarningMessage();
   }
 
   get _isArray() {
@@ -168,6 +177,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     this.disabled = false;
     this.noLabelFloat = false;
     this.name = undefined;
+    this._arrayWarningMessages = [];
   }
 
   /**
@@ -225,6 +235,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       value = [];
     }
     this._arrayValue = value;
+    this._setWarningMessagesForArray(value);
   }
 
   /**
@@ -281,6 +292,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       value: ''
     });
     this._arrayValue = [...items];
+    this._addEmptyArrayWarningMessage();
     return this._arrayValue.length - 1;
   }
 
@@ -292,6 +304,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     const value = this._arrayValue;
     value.splice(index, 1);
     this._arrayValue = [...value];
+    this._removeArrayWarningMessage(index);
     this._arrayValueChanged();
   }
 
@@ -445,6 +458,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     }
     const value = this._arrayValue;
     value[index].value = input.value;
+    this._updateArrayValueWarningMessage(index);
     this._arrayValue = [...value];
     this._arrayValueChanged();
     this._notifyInput();
@@ -535,14 +549,13 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
   }
 
   [inputTemplate]() {
-    const { name, noLabelFloat, readOnly, disabled, value, outlined, compatibility, _nilEnabled } = this;
+    const { name, noLabelFloat, readOnly, disabled, value, outlined, compatibility, _nilEnabled, _valueWarningMessage } = this;
     const viewModel = /** @type AmfFormItem */ (this.model);
     if (!viewModel) {
       return '';
     }
     const { schema = {} } = viewModel;
     const required = this._computeIsRequired(schema);
-    const warningMessage = this._computeInputWarningMessage(value, required, schema);
     return html`<anypoint-input
       .value="${value}"
       ?required="${!_nilEnabled && required}"
@@ -564,14 +577,14 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       @input="${this._inputHandler}"
       @change="${this._inputChangeHandler}"
       invalidMessage="${`${name} is invalid. Check documentation.`}"
-      .infoMessage="${warningMessage}"
+      .infoMessage="${_valueWarningMessage}"
     >
       <label slot="label">${schema.inputLabel}</label>
     </anypoint-input>`;
   }
 
   [arrayTemplate]() {
-    const { name, readOnly, disabled, _arrayValue=[], outlined, compatibility, _nilEnabled } = this;
+    const { name, readOnly, disabled, _arrayValue=[], outlined, compatibility, _nilEnabled, _arrayWarningMessages } = this;
     const viewModel = /** @type AmfFormItem */ (this.model);
     if (!viewModel) {
       return '';
@@ -583,7 +596,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
 
     ${_arrayValue.map((item, index) => {
       const required = this._computeIsRequired(schema);
-      const warningMessage = this._computeInputWarningMessage(item.value, required, schema);
+      const warningMessage = _arrayWarningMessages[index];
       return html`
     <div class="array-item">
       <anypoint-input
@@ -667,7 +680,74 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     return undefined;
   }
 
-  _computeIsTextInput(schema) {
+  /**
+   * Determines whether the schema for a form item
+   * describes a text inpuot
+   * @param {AmfFormItemSchema} schema 
+   * @returns {Boolean} True is there is no input type, or if it 'text'
+   */
+  _computeIsTextInput(/** @type AmfFormItemSchema */ schema) {
     return !schema.inputType || schema.inputType === 'text';
+  }
+
+  /**
+   * Set `_valueWarningMessage` based on `_value`'s content and
+   * the model's schema.
+   */
+  _updateValueWarningMessage() {
+    const { model, value } = this
+    const viewModel = /** @type AmfFormItem */ model;
+    if (!viewModel) {
+      return;
+    }
+    const { schema = {} } = viewModel;
+    const required = this._computeIsRequired(schema);
+    this._valueWarningMessage = this._computeInputWarningMessage(value, required, schema);
+  }
+
+  /**
+   * Set `_arrayWarningMessages` at @index based on the value of the array
+   * at `index` value, using model's schema.
+   * @param {Number} index Index of value in `_arrayValue` array
+   */
+  _updateArrayValueWarningMessage(index) {
+    const { model, _arrayValue } = this;
+    const { value } = _arrayValue[index];
+    const viewModel = /** @type AmfFormItem */ model;
+    if (!viewModel) {
+      return;
+    }
+    const { schema = {} } = viewModel;
+    const required = this._computeIsRequired(schema);
+    this._arrayWarningMessages[index] = this._computeInputWarningMessage(value, required, schema);
+  }
+
+  /**
+   * Adds new empty warning message to `_arrayWarningMessages` array
+   * and immediately calls method to update the warning message at that
+   * index.
+   */
+  _addEmptyArrayWarningMessage() {
+    this._arrayWarningMessages = [...this._arrayWarningMessages, ''];
+    this._updateArrayValueWarningMessage(this._arrayWarningMessages.length - 1);
+  }
+
+  /**
+   * Removes warning messages at specified index.
+   * @param {Number} index Index of `_arrayWarningMessages` array
+   */
+  _removeArrayWarningMessage(index) {
+    const value = this._arrayWarningMessages;
+    value.splice(index, 1);
+    this._arrayWarningMessages = [...value];
+  }
+
+  _setWarningMessagesForArray(values) {
+    if (!values) {
+      return;
+    }
+    for (let i = 0; i < values.length; i++) {
+      this._addEmptyArrayWarningMessage();
+    }
   }
 }
