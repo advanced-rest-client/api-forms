@@ -1,6 +1,6 @@
 import { CSSResult, LitElement, TemplateResult } from 'lit-element';
 import { ValidatableMixin } from '@anypoint-web-components/validatable-mixin';
-import { AmfFormItem } from '@advanced-rest-client/arc-types/src/forms/FormTypes';
+import { AmfFormItem, AmfFormItemSchema } from '@advanced-rest-client/arc-types/src/forms/FormTypes';
 import { AnypointInput } from '@anypoint-web-components/anypoint-input';
 import { AnypointDropdownMenu } from '@anypoint-web-components/anypoint-dropdown-menu';
 
@@ -196,4 +196,19 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
   [inputTemplate](): TemplateResult | string;
 
   [arrayTemplate](): TemplateResult | string;
+
+  _computeInputWarningMessage(value: AmfFormItemSchema, required: boolean): string | undefined
+
+  _computeIsTextInput(schema: AmfFormItemSchema): boolean
+
+  _updateValueWarningMessage(): void
+
+  _updateArrayValueWarningMessage(index: number): void
+
+  _addEmptyArrayWarningMessage(): void
+
+  _removeArrayWarningMessage(index: number): void
+
+  _setWarningMessagesForArray(values: { value: string }[]): void
+
 }

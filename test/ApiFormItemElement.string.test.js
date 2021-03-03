@@ -14,6 +14,7 @@ describe('ApiFormItemElement', () => {
    * @return {Promise<ApiFormItemElement>} 
    */
   async function basicFixture() {
+    // @ts-ignore
     return (fixture(html `<api-form-item></api-form-item>`));
   }
 
@@ -216,6 +217,83 @@ describe('ApiFormItemElement', () => {
       input.dispatchEvent(new CustomEvent('input'));
       assert.isTrue(spy.called, 'event is dispatched');
       assert.equal(spy.args[0][0].target.value, 'test-value', 'target has value');
+    });
+  });
+
+  describe('required text input', () => {
+    let element = /** @type ApiFormItemElement */ (null);
+    let model;
+
+    beforeEach(async () => {
+      element = await basicFixture();
+      model = {
+        name: '',
+        value: undefined,
+        schema: {
+          required: true,
+          inputLabel: 'Enter value',
+        }
+      };
+      element.model = model;
+      await nextFrame();
+    });
+
+    it('should not set required if schema is required without minLength nor pattern', () => {
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isNotTrue(input.required);
+    });
+
+    it('should show warning message if schema is required without minLength nor pattern', () => {
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isUndefined(input.infoMessage);
+    });
+
+    it('should set required if schema is required with minLength', async () => {
+      model = { ...model, schema: { ...model.schema, minLength: 1 } };
+      element.model = model;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isTrue(input.required);
+    });
+
+    it('should not show warning message if schema is required with minLength', async () => {
+      model = { ...model, schema: { ...model.schema, minLength: 1 } };
+      element.model = model;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isUndefined(input.infoMessage);
+    });
+
+    it('should set required if schema is required with pattern', async () => {
+      model = { ...model, schema: { ...model.schema, pattern: '[a-zA-Z0-9_]*' } };
+      element.model = model;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isTrue(input.required);
+    });
+
+    it('should not show warning message if schema is required with pattern', async () => {
+      model = { ...model, schema: { ...model.schema, pattern: '[a-zA-Z0-9_]*' } };
+      element.model = model;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isUndefined(input.infoMessage);
+    });
+
+    it('should not set required if schema is not required with minLength', async () => {
+      model = { ...model, schema: { ...model.schema, minLength: 1, required: false } };
+      element.model = model;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isNotTrue(input.required);
+    });
+
+    it('should not set required if schema is not required with pattern', async () => {
+      model = { ...model, schema: { ...model.schema, pattern: '[a-zA-Z0-9_]*', required: false } };
+      element.model = model;
+      await nextFrame();
+      const input = element.shadowRoot.querySelector('anypoint-input');
+      assert.isNotTrue(input.required);
     });
   });
 });
