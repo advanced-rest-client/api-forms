@@ -245,7 +245,7 @@ describe('ApiFormItemElement', () => {
 
     it('should show warning message if schema is required without minLength nor pattern', () => {
       const input = element.shadowRoot.querySelector('anypoint-input');
-      assert.isUndefined(input.infoMessage);
+      assert.isDefined(input.infoMessage);
     });
 
     it('should set required if schema is required with minLength', async () => {

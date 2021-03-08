@@ -215,6 +215,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
         this._isInput = true;
     }
     this._isNillable = !!schema.isNillable;
+    this._updateValueWarningMessage();
   }
 
   /**
