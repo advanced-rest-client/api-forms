@@ -2,6 +2,7 @@
   "demo-api/demo-api.raml": "RAML 1.0",
   "APIC-168/APIC-168.raml": "RAML 1.0",
   "APIC-490/APIC-490.raml": "RAML 1.0",
+  "APIC-666/APIC-666.raml": "RAML 1.0",
   "annotated-oauth2/annotated-oauth2.raml": "RAML 1.0",
   "APIC-298/APIC-298.json": ["OAS 2.0", "application/json"],
   "APIC-289/APIC-289.yaml": ["OAS 2.0", "application/yaml"],

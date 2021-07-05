@@ -296,4 +296,40 @@ describe('ApiFormItemElement', () => {
       assert.isNotTrue(input.required);
     });
   });
+
+  describe('Number values', () => {
+    let element = /** @type ApiFormItemElement */ (null);
+    let model;
+    beforeEach(async () => {
+      element = await basicFixture();
+    });
+
+    [
+      [undefined, 'any'],
+      ['int', ''],
+      ['int8', ''],
+      ['int16', ''],
+      ['int32', ''],
+      ['long', ''],
+      ['float', 'any'],
+      ['double', 'any']
+    ].forEach(([format, expectedStep]) => {
+      it(`${expectedStep} step for ${format} input`, async () => {
+        model = {
+          name: '',
+          value: undefined,
+          schema: {
+            required: true,
+            format,
+            inputType: 'number'
+          }
+        };
+        element.model = model;
+        await nextFrame();
+
+        const node = element.shadowRoot.querySelector('anypoint-input');
+        assert.equal(node.step, expectedStep);
+      });
+    })
+  });
 });
