@@ -557,11 +557,13 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
    */
   _stepValue(schema) {
     let step = '1';
-    const {format, inputType} = schema;
+    const {format, inputType, multipleOf} = schema;
     if (inputType) {
       const anyNumberFormat = inputType === 'number' && !format;
       const anyDecimalNumber = decimalInputTypes.indexOf(format) !== -1;
-      if (anyNumberFormat || anyDecimalNumber) {
+      if (multipleOf) {
+        step = multipleOf
+      } else if (anyNumberFormat || anyDecimalNumber) {
         step = 'any';
       }
     }
