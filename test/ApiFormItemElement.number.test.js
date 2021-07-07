@@ -201,4 +201,58 @@ describe('ApiFormItemElement', () => {
       assert.equal(spy.args[0][0].target.value, inputValue, 'target has value');
     });
   });
+
+  describe('Number values', () => {
+    let element = /** @type ApiFormItemElement */ (null);
+    let model;
+    beforeEach(async () => {
+      element = await basicFixture();
+    });
+
+    [
+      [undefined, 'any'],
+      ['int', '1'],
+      ['int8', '1'],
+      ['int16', '1'],
+      ['int32', '1'],
+      ['long', '1'],
+      ['float', 'any'],
+      ['double', 'any']
+    ].forEach(([format, expectedStep]) => {
+      it(`${expectedStep} step for ${format} input`, async () => {
+        model = {
+          name: '',
+          value: undefined,
+          schema: {
+            required: true,
+            format,
+            inputType: 'number'
+          }
+        };
+        element.model = model;
+        await nextFrame();
+
+        const node = element.shadowRoot.querySelector('anypoint-input');
+        assert.equal(node.step, expectedStep);
+      });
+    })
+
+    it('step matching multipleOf value if defined', async () => {
+      const multipleOf = 0.1;
+      model = {
+        name: '',
+        value: undefined,
+        schema: {
+          required: true,
+          multipleOf,
+          inputType: 'number'
+        }
+      };
+      element.model = model;
+      await nextFrame();
+
+      const node = element.shadowRoot.querySelector('anypoint-input');
+      assert.equal(node.step, multipleOf);
+    });
+  });
 });

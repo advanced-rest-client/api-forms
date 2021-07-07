@@ -93,7 +93,7 @@ function appendGlobalValue(binding, data) {
   }
 }
 
-const NUMBER_INPUT_TYPES = ['number', 'integer', 'float'];
+const NUMBER_INPUT_TYPES = ['number', 'integer', 'float', 'double'];
 
 /**
  * An element to transform AMF LD model into a form view model.

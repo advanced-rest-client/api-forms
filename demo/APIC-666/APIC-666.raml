@@ -1,0 +1,33 @@
+#%RAML 1.0
+title: SE-21538
+
+/weatherReports500:
+  get:
+    description: Lodge or create a new weather report
+    queryParameters:
+      param1:
+        type: number
+      param2:
+        type: number
+        format: int
+      param3:
+        type: number
+        format: int8
+      param4:
+        type: number
+        format: int16
+      param5:
+        type: number
+        format: int32
+      param6:
+        type: number
+        format: long
+      param7:
+        type: number
+        format: float
+      param9:
+        type: number
+        format: double
+    responses:
+      "200":
+        description: Happy path creation result

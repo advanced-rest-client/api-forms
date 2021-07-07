@@ -27,6 +27,7 @@ export const modelValue = Symbol('modelValue');
 export const valueValue = Symbol('valueValue');
 export const isArrayValue = Symbol('isArrayValue');
 export const isNillableValue = Symbol('isNillableValue');
+const decimalInputTypes = ['float', 'double'];
 
 /**
  * An element that renders a form input to edit API type value.
@@ -549,6 +550,26 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     </anypoint-dropdown-menu>`;
   }
 
+  /**
+   * Determines whether the input should have step value.
+   * @param {AmfFormItemSchema} schema
+   * @returns {String}
+   */
+  _stepValue(schema) {
+    let step = '1';
+    const {format, inputType, multipleOf} = schema;
+    if (inputType) {
+      const anyNumberFormat = inputType === 'number' && !format;
+      const anyDecimalNumber = decimalInputTypes.indexOf(format) !== -1;
+      if (multipleOf) {
+        step = multipleOf
+      } else if (anyNumberFormat || anyDecimalNumber) {
+        step = 'any';
+      }
+    }
+    return step;
+  }
+
   [inputTemplate]() {
     const { name, noLabelFloat, readOnly, disabled, value, outlined, compatibility, _nilEnabled, _valueWarningMessage } = this;
     const viewModel = /** @type AmfFormItem */ (this.model);
@@ -557,6 +578,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     }
     const { schema = {} } = viewModel;
     const required = this._computeIsRequired(schema);
+    const step = this._stepValue(schema);
     return html`<anypoint-input
       .value="${value}"
       ?required="${!_nilEnabled && required}"
@@ -579,6 +601,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       @change="${this._inputChangeHandler}"
       invalidMessage="${`${name} is invalid. Check documentation.`}"
       .infoMessage="${_valueWarningMessage}"
+      .step="${step}"
     >
       <label slot="label">${schema.inputLabel}</label>
     </anypoint-input>`;
