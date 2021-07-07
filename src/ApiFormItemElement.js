@@ -556,7 +556,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
    * @returns {String}
    */
   _stepValue(schema) {
-    let step = '';
+    let step = '1';
     const {format, inputType} = schema;
     if (inputType) {
       const anyNumberFormat = inputType === 'number' && !format;
