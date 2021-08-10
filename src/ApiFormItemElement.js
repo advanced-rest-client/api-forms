@@ -474,7 +474,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
   }
 
   render() {
-    const { readOnly, disabled, _isEnum, _isBoolean, _isInput, _isArray, _isNillable } = this;
+    const { readOnly, disabled, _isEnum, _isBoolean, _isInput, _isArray, _isNillable, name } = this;
     return html`
     <style>${this.styles}</style>
     <div class="content">
@@ -486,6 +486,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       ${_isNillable ? html`<anypoint-checkbox
         ?disabled="${readOnly || disabled}"
         class="nil-option"
+        data-form-item-name="${name}"
         @checked-changed="${this._nillableChanged}">Nil</anypoint-checkbox>` : undefined}
     </div>`;
   }
@@ -504,6 +505,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       ?disabled="${readOnly || disabled || _nilEnabled}"
       ?outlined="${outlined}"
       ?compatibility="${compatibility}"
+      data-form-item-name="${name}"
     >
       <label slot="label">${schema.inputLabel}</label>
       <anypoint-listbox
@@ -535,6 +537,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       ?disabled="${readOnly || disabled || _nilEnabled}"
       ?outlined="${outlined}"
       ?compatibility="${compatibility}"
+      data-form-item-name="${name}"
     >
       <label slot="label">${schema.inputLabel}</label>
       <anypoint-listbox
@@ -602,6 +605,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       invalidMessage="${`${name} is invalid. Check documentation.`}"
       .infoMessage="${_valueWarningMessage}"
       .step="${step}"
+      data-form-item-name="${name}"
     >
       <label slot="label">${schema.inputLabel}</label>
     </anypoint-input>`;
@@ -641,6 +645,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
         ?compatibility="${compatibility}"
         data-type="array"
         data-index="${index}"
+        data-form-item-name="${name}"
         @input="${this._arrayValueHandler}"
         invalidMessage="${`${name} is invalid. Check documentation.`}"
         .infoMessage="${warningMessage}"

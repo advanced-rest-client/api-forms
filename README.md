@@ -4,7 +4,7 @@ A module that has a number of helper libraries that are used to build forms in t
 
 [![Published on NPM](https://img.shields.io/npm/v/@api-components/api-forms.svg)](https://www.npmjs.com/package/@advanced-rest-client/api-forms)
 
-[![Build Status](https://travis-ci.com/advanced-rest-client/api-forms.svg)](https://travis-ci.com/advanced-rest-client/api-forms)
+[![Tests and publishing](https://github.com/advanced-rest-client/api-forms/actions/workflows/deployment.yml/badge.svg)](https://github.com/advanced-rest-client/api-forms/actions/workflows/deployment.yml)
 
 ## Usage
 
