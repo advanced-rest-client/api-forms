@@ -7,8 +7,8 @@ The Advanced REST Client is an open source project and everyone can use it or pa
 **For commercial or non open source projects you can use this software on CC-BY 4.0 license.**
 
 ## Non commercial or open source license
-Apache License, Version 2.0
 
+Apache License, Version 2.0
 
 Apache License
 Version 2.0,
