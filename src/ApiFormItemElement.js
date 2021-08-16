@@ -495,11 +495,17 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
     const { name, readOnly, disabled, value, outlined, compatibility, _nilEnabled } = this;
     const viewModel = /** @type AmfFormItem */ (this.model);
     const { schema = {} } = viewModel;
-    const values = schema.enum || [];
+    // make a copy so manipulating the array items won't change the source.
+    const values = [...(schema.enum || [])];
+    const isRequired = !_nilEnabled && schema.required;
+    if (!isRequired) {
+      // non required items should have an option to set a null value.
+      values.unshift('');
+    }
     return html`
     <anypoint-dropdown-menu
       name="${name}"
-      ?required="${!_nilEnabled && schema.required}"
+      ?required="${isRequired}"
       autoValidate
       data-type="enum"
       ?disabled="${readOnly || disabled || _nilEnabled}"
@@ -556,7 +562,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
   /**
    * Determines whether the input should have step value.
    * @param {AmfFormItemSchema} schema
-   * @returns {String}
+   * @returns {string}
    */
   _stepValue(schema) {
     let step = '1';
@@ -565,7 +571,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       const anyNumberFormat = inputType === 'number' && !format;
       const anyDecimalNumber = decimalInputTypes.indexOf(format) !== -1;
       if (multipleOf) {
-        step = multipleOf
+        step = String(multipleOf)
       } else if (anyNumberFormat || anyDecimalNumber) {
         step = 'any';
       }

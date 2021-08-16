@@ -4,7 +4,7 @@ import {
   html,
   nextFrame
 } from '@open-wc/testing';
-import * as sinon from 'sinon';
+import sinon from 'sinon';
 import '../api-form-item.js';
 import { enumTemplate } from '../src/ApiFormItemElement.js';
 
@@ -101,6 +101,15 @@ describe('ApiFormItemElement', () => {
       assert.isTrue(menu.compatibility, 'dropdown has the property');
       const listbox = element.shadowRoot.querySelector('anypoint-listbox');
       assert.isTrue(listbox.compatibility, 'listbox has the property');
+    });
+
+    it('adds an empty list value when optional', async () => {
+      element.model.schema.required = false;
+      await element.requestUpdate();
+      const items = element.shadowRoot.querySelectorAll('anypoint-item');
+      assert.lengthOf(items, 4, 'has an extra item');
+      const item = items[0];
+      assert.equal(item.getAttribute('data-value'), '', 'has no value');
     });
   });
 
