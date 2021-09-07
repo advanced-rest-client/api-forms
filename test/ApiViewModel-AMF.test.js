@@ -833,6 +833,35 @@ describe('ApiViewModel', () => {
           assert.isFalse(item.schema.isNillable);
         });
       });
+
+      describe('APIC-709', () => {
+        let amf;
+
+        before(async () => {
+          amf = await AmfLoader.load(/** @type boolean */ (compact), 'APIC-709');
+        });
+
+        let model;
+        let element = /** @type ApiViewModel */ (null);
+        let headers;
+
+        beforeEach(() => {
+          element = new ApiViewModel({ amf });
+          model = AmfLoader.lookupSecurityScheme(amf, '/test', 'get', 'Pepe');
+          const hKey = element._getAmfKey(element.ns.aml.vocabularies.apiContract.header);
+          headers = element._ensureArray(model[hKey]);
+        });
+
+        it('should compute isCredentialsId field for first item', () => {
+          const result = element.computeViewModel(headers);
+          assert.isTrue(result[0].schema.isCredentialsIdField);
+        });
+
+        it('should compute isCredentialsSecret field for second item', () => {
+          const result = element.computeViewModel(headers);
+          assert.isTrue(result[1].schema.isCredentialsSecretField);
+        });
+      });
     });
   });
 });
