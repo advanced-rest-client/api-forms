@@ -327,6 +327,12 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
       schemaItem.pattern = this._computeModelPattern(schemaItem.apiType, schemaItem.pattern, schemaItem.format);
       schemaItem.isNillable = schemaItem.apiType === 'union' ? this._computeIsNillable(def) : false;
       schemaItem.noAutoEncode = this._hasNoAutoEncodeProperty(schema);
+      if (this._computeBooleanAnnotationField(schema, 'credentialsId')) {
+        schemaItem.isCredentialsIdField = true;
+      }
+      if (this._computeBooleanAnnotationField(schema, 'credentialsSecret')) {
+        schemaItem.isCredentialsSecretField = true;
+      }
     }
     if (!this.noDocs) {
       schemaItem.description = this._computeDescription(amfItem);
@@ -343,6 +349,32 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
     // store cache
     appendGlobalValue(binding, result);
     return result;
+  }
+
+  /**
+   * 
+   * @param {Object} model AMF model
+   * @param {string} annotationName Name of the annotation to check for
+   * @return {boolean|undefined} Boolean annotation value if present, or `undefined` if not present
+   */
+  _computeBooleanAnnotationField(model, annotationName) {
+    const key = this._getAmfKey(this.ns.aml.vocabularies.document.customDomainProperties);
+    if (typeof model[key] === 'undefined') {
+      return undefined;
+    }
+    const values = this._ensureArray(model[key]);
+    for (let i = 0, len = values.length; i < len; i++) {
+      let id = /** @type string */ (this._getValue(values[i], '@id'));
+      if (!id.startsWith('amf://id')) {
+        id = `amf://id${id}`;
+      }
+      const node = model[id];
+      const extensionNameKey = this._getAmfKey(this.ns.aml.vocabularies.core.extensionName);
+      if (this._getValue(node, extensionNameKey) === annotationName) {
+        return this._getValue(node, this.ns.aml.vocabularies.data.value) === true;
+      }
+    }
+    return undefined
   }
 
   /**
