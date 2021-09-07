@@ -371,7 +371,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
       const node = model[id];
       const extensionNameKey = this._getAmfKey(this.ns.aml.vocabularies.core.extensionName);
       if (this._getValue(node, extensionNameKey) === annotationName) {
-        return this._getValue(node, this.ns.aml.vocabularies.data.value) === true;
+        return this._getValue(node, this.ns.aml.vocabularies.data.value) === 'true';
       }
     }
     return undefined
