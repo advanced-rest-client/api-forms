@@ -111,6 +111,25 @@ describe('ApiFormItemElement', () => {
       const item = items[0];
       assert.equal(item.getAttribute('data-value'), '', 'has no value');
     });
+
+    it('renders listBox with selected item', async () => {
+      element.model = {
+        name: '',
+        value: 50,
+        schema: {
+          required: true,
+          apiType: 'integer',
+          inputLabel: 'Enum integer',
+          inputType: 'text',
+          enum: ['25', '50', '100']
+        }
+      };
+      await nextFrame();
+      await nextFrame();
+
+      const listBox = element.shadowRoot.querySelector('anypoint-listbox');
+      assert.isDefined(listBox.selected, 'listbox has the property');
+    });
   });
 
   describe('Enum values: a11y', () => {

@@ -502,6 +502,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       // non required items should have an option to set a null value.
       values.unshift('');
     }
+    const selectedValue = schema.apiType === 'integer' ? value.toString() : value;
     return html`
     <anypoint-dropdown-menu
       name="${name}"
@@ -517,7 +518,7 @@ export class ApiFormItemElement extends ValidatableMixin(LitElement) {
       <anypoint-listbox
         slot="dropdown-content"
         attrforselected="data-value"
-        .selected="${value}"
+        .selected="${selectedValue}"
         ?compatibility="${compatibility}"
         @selected-changed="${this._listSelectionHandler}"
       >
