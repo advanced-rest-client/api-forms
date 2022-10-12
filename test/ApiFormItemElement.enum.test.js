@@ -112,7 +112,7 @@ describe('ApiFormItemElement', () => {
       assert.equal(item.getAttribute('data-value'), '', 'has no value');
     });
 
-    it('renders template when no enum values', async () => {
+    it('renders listBox with selected item', async () => {
       element.model = {
         name: '',
         value: 50,
