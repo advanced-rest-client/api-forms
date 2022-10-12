@@ -6,5 +6,6 @@
   "annotated-oauth2/annotated-oauth2.raml": "RAML 1.0",
   "APIC-298/APIC-298.json": ["OAS 2.0", "application/json"],
   "APIC-289/APIC-289.yaml": ["OAS 2.0", "application/yaml"],
+  "W-11836777/W-11836777.yaml": ["OAS 3.0", "application/yaml"],
   "no-auto-encoding/no-auto-encoding.raml": "RAML 1.0"
 }

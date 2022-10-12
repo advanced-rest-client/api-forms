@@ -121,6 +121,18 @@ class ComponentDemo extends DemoPage {
         enum: ['apple', 'banana', 'cherries', 'grapes', 'lemon', 'orange', 'pear', 'watermelon']
       }
     });
+
+    this.m12 = /** @type AmfFormItem */({
+      name: '',
+      value: 50,
+      schema: {
+        required: true,
+        apiType: 'integer',
+        inputLabel: 'Enum integer',
+        inputType: 'text',
+        enum: ['25', '50', '100']
+      }
+    });
   }
 
   _readonlyHandler(e) {
@@ -305,6 +317,19 @@ class ComponentDemo extends DemoPage {
           data-target="v10"
           @change="${this._valueHandler}"></api-form-item>
         <code>${this.v10}</code>
+      </section>
+
+      <section class="card">
+        <h3>Enum with integer options</h3>
+        <api-form-item
+          .readOnly="${readOnly}"
+          .model="${this.m12}"
+          ?outlined="${outlined}"
+          ?compatibility="${compatibility}"
+          name="enumIntModel"
+          data-target="m12"
+          @change="${this._valueHandler}" 
+          value="${50}"></api-form-item>
       </section>
   `;
   }
