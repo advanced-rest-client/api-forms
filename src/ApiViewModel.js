@@ -266,6 +266,13 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
     return result;
   }
 
+  _toBoolean(value) {
+    if (typeof value === 'boolean') {
+      return value
+    }
+    return value === 'true'
+  }
+
   /**
    * Creates a UI model item from AMF json/ld model for a parameter.
    * @param {any} amfItem AMF model with schema for
@@ -276,7 +283,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
     amfItem = this._resolve(amfItem);
     const binding = /** @type string */ (this._getValue(amfItem, this.ns.aml.vocabularies.apiContract.binding))
     const name = this._computeFormName(amfItem);
-    const required = /** @type boolean */ (this._getValue(amfItem, this.ns.aml.vocabularies.apiContract.required))
+    const required = this._toBoolean(this._getValue(amfItem, this.ns.aml.vocabularies.apiContract.required))
     const schemaItem = /** @type AmfFormItemSchema */ ({
       required,
     });
@@ -726,7 +733,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
   _computeRequiredPropertyShape(model) {
     const key = this.ns.w3.shacl.minCount;
     const result = this._getValue(model, key);
-    return result === 1;
+    return Number(result) === 1;
   }
 
   /**
