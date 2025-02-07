@@ -128,7 +128,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
   /**
    * @param {ConstructorOptions=} [opts={}]
    */
-  constructor(opts={}) {
+  constructor(opts = {}) {
     super();
     /**
      * An array of properties for which view model is to be generated.
@@ -220,7 +220,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
         result[result.length] = data;
       }
     } else if (this._hasType(items, this.ns.aml.vocabularies.shapes.UnionShape)) {
-      result = this. _modelForUnion(items);
+      result = this._modelForUnion(items);
     }
     return result;
   }
@@ -338,6 +338,9 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
     if (!this.noDocs) {
       schemaItem.description = this._computeDescription(amfItem);
     }
+    if (schemaItem.isBool) {
+      result.value = schemaItem.defaultValue
+    }
     const valueDelimiter = this._computeValueDelimiter(binding);
     const decodeValues = this._computeDecodeValues(binding);
     const processOptions = {
@@ -453,7 +456,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
    * @param {ProcessOptions=} processOptions
    * @return {AmfFormItem[]} View model for items.
    */
-  modelForRawObject(model, processOptions={}) {
+  modelForRawObject(model, processOptions = {}) {
     const result = [];
     const keys = Object.keys(model);
     const dataKey = this._getAmfKey(this.ns.raml.vocabularies.data.toString());
@@ -625,8 +628,8 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
     }
     if (item.schema.required && typeof item.schema.defaultValue !== 'undefined') {
       item.value = item.schema.isArray ?
-        this._parseArrayExample(/** @type {string} */ (item.schema.defaultValue), processOptions) :
-        this._exampleAsValue(/** @type {string} */ (item.schema.defaultValue), processOptions);
+        this._parseArrayExample(/** @type {string} */(item.schema.defaultValue), processOptions) :
+        this._exampleAsValue(/** @type {string} */(item.schema.defaultValue), processOptions);
     }
     if (typeof item.value === 'undefined' && item.schema.required) {
       const { examples } = item.schema;
@@ -1181,10 +1184,10 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
   _computeInputType(type) {
     if (type && NUMBER_INPUT_TYPES.indexOf(type) !== -1) {
       return 'number';
-    } 
+    }
     if (type === 'boolean') {
       return 'boolean';
-    } 
+    }
     if (type === 'date-only' || type === 'date') {
       return 'date';
     } /* else if (type === 'time-only' || type === 'time') {
@@ -1268,7 +1271,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
    * @param {string=} binding
    * @return {AmfFormItem} Generated basic view model.
    */
-  buildProperty(defaults={
+  buildProperty(defaults = {
     name: undefined,
     value: undefined,
     enabled: true,
@@ -1367,7 +1370,7 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
       return false;
     }
     for (let i = 0, len = values.length; i < len; i++) {
-      const id = this._ensureAmfPrefix(/** @type string */ (this._getValue(values[i], '@id')));
+      const id = this._ensureAmfPrefix(/** @type string */(this._getValue(values[i], '@id')));
       const node = shape[id];
       const extensionNameKey = this._getAmfKey(this.ns.aml.vocabularies.core.extensionName);
       if (this._getValue(node, extensionNameKey) === 'no-auto-encoding') {
@@ -1378,8 +1381,8 @@ export class ApiViewModel extends AmfHelperMixin(Object) {
   }
 
   /**
-   * 
-   * @param {string} id 
+   *
+   * @param {string} id
    * @return {string}
    */
   _ensureAmfPrefix(id) {
